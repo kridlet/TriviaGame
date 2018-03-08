@@ -323,29 +323,20 @@ var game = {
         game.timer = game.timerDuration;
         // get array of state keys from state object
         keys = Object.keys(state);
-        console.log(keys);
-        // generate a random number between 0 and the length og the keys array
-        // while that random key is not in the spent array
-
-
-
-        do  {
+        do {
+            // generate a random number between 0 and the length og the keys array
             randomKey = Math.floor(Math.random() * keys.length);
-            console.log(randomKey);
-            // add the  key to the spent array
-            console.log(game.spentStates);
-            console.log(game.spentStates.includes(randomKey));
-            // display the question
-            $("#question").html(state[keys[randomKey]].capital + " is the capital of which state?");
-            // set the correct answers in the object
-            game.currentCorrect = state[keys[randomKey]].name;
-            game.currentCorrectAbbrv = state[keys[randomKey]].abbreviation;
-            game.currentCorrectCapital = state[keys[randomKey]].capital;
-            // generate a new key
-        } while (game.spentStates.includes(randomKey)===true);
+        // while that random key is not in the spent array
+        } while (game.spentStates.includes(randomKey) === true);
+        // add the  key to the spent array
         game.spentStates.push(randomKey);
-
-        // debugger;
+        // set the correct answers in the object
+        game.currentCorrect = state[keys[randomKey]].name;
+        game.currentCorrectAbbrv = state[keys[randomKey]].abbreviation;
+        game.currentCorrectCapital = state[keys[randomKey]].capital;
+        // display the question
+        $("#question").html(state[keys[randomKey]].capital + " is the capital of which state?");
+        // start the timer
         this.intervalId = setInterval(this.questionCountDown, 1000);
     },
 
@@ -360,8 +351,6 @@ var game = {
             }
         }
     },
-
-
 
     evaluateAnswer: function (code, region) {
         console.log(region + ' choice');
@@ -397,11 +386,9 @@ var game = {
                 game.resetQuestion();
             }
             game.disableClick = 0;
-        }, 1000);
+        }, 3000);
     },
 }
-
-
 
 $(document).ready(function () {
     $('#vmap').vectorMap(vectorMap);
