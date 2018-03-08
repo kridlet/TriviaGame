@@ -292,17 +292,30 @@ var game = {
     disableClick: 0,
     spentStates: [],
     questionsToAsk: 10,
+    questionCounter: 0,
 
     resetGame: function (status) {
         // reset started bit
         this.started = 0;
         // set the modal message
-        html = "correct: " + this.correctAnswers + "<br>incorrect: " + this.incorrectAnswers + "<br>";
+        if (status==="start") {
+            this.spentStates = [];
+            html = 'Test your 7th-grade geography knowledge!<br><br>Click to play.';            
+        } else {
+            if (this.questionCounter >= Object.keys(state).length) {
+                this.spentStates = [];
+                html = "Correct States: " + this.correctAnswers + "<br><br>Incorrect States: " + this.incorrectAnswers + "<br><br>Click to play again.";
+                this.correctAnswers  = 0;
+                this.incorrectAnswers = 0;
+            } else {
+                html = "Correct States: " + this.correctAnswers + "<br><br>Incorrect States: " + this.incorrectAnswers + "<br><br>Click to continue playing.";
+            }
+        }
         this.incorrectAnswers = 0;
         this.correctAnswers = 0;
         // show the overlay and modal
         $("#overlay").show();
-        $("#modal").html(html + "Click to play.");
+        $("#modal").html(html);
         $("#modal").show();
         // look for clicks
         $("#modal").click(function () {
@@ -346,16 +359,13 @@ var game = {
                 game.disableClick = 1;
                 game.evaluateAnswer("zz", "Timed Out");
             } else {
-                // $(".timer").html(game.timer);
                 game.timer--;
             }
         }
     },
 
     evaluateAnswer: function (code, region) {
-        console.log(region + ' choice');
-        console.log(game.currentCorrect + ' correct');
-        console.log(game.currentCorrectAbbrv + ' abbrieviation');
+        game.questionCounter++;
         var htmlAdd = "";
         // stop question timer
         clearInterval(game.intervalId);
@@ -373,6 +383,9 @@ var game = {
             htmlAdd = "Nope. ";
             // set color of state
             state_colors[state_code] = 'red';
+        }
+        if (region==="Timed Out") {
+            htmlAdd = "Time expired. ";
         }
         $('#vmap').vectorMap('set', 'colors', state_colors);
         //display answer/choice
