@@ -292,7 +292,6 @@ var game = {
     disableClick: 0,
     spentStates: [],
     questionsToAsk: 10,
-    questionCounter: 0,
 
     resetGame: function (status) {
         // reset started bit
@@ -302,15 +301,16 @@ var game = {
             this.spentStates = [];
             html = 'Test your 7th-grade geography knowledge!<br><br>Click to play.';            
         } else {
-            if (this.questionCounter >= Object.keys(state).length) {
+            // see make sure we don't look for states to ask about, if they're all used up
+            if (this.spentStates.length >= Object.keys(state).length) {
+                // empty array to start over
                 this.spentStates = [];
                 html = "Correct States: " + this.correctAnswers + "<br><br>Incorrect States: " + this.incorrectAnswers + "<br><br>Click to play again.";
-                this.correctAnswers  = 0;
-                this.incorrectAnswers = 0;
             } else {
                 html = "Correct States: " + this.correctAnswers + "<br><br>Incorrect States: " + this.incorrectAnswers + "<br><br>Click to continue playing.";
             }
         }
+        // reset answer counters
         this.incorrectAnswers = 0;
         this.correctAnswers = 0;
         // show the overlay and modal
@@ -336,6 +336,9 @@ var game = {
         game.timer = game.timerDuration;
         // get array of state keys from state object
         keys = Object.keys(state);
+        if (keys.length <= game.spentStates.length) {
+            game.resetGame();
+        }
         do {
             // generate a random number between 0 and the length og the keys array
             randomKey = Math.floor(Math.random() * keys.length);
@@ -365,7 +368,6 @@ var game = {
     },
 
     evaluateAnswer: function (code, region) {
-        game.questionCounter++;
         var htmlAdd = "";
         // stop question timer
         clearInterval(game.intervalId);
