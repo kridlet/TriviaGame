@@ -327,11 +327,12 @@ var game = {
         // generate a random number between 0 and the length og the keys array
         // while that random key is not in the spent array
 
+
+
         do  {
             randomKey = Math.floor(Math.random() * keys.length);
             console.log(randomKey);
             // add the  key to the spent array
-            game.spentStates.push(randomKey);
             console.log(game.spentStates);
             console.log(game.spentStates.includes(randomKey));
             // display the question
@@ -342,6 +343,8 @@ var game = {
             game.currentCorrectCapital = state[keys[randomKey]].capital;
             // generate a new key
         } while (game.spentStates.includes(randomKey)===true);
+        game.spentStates.push(randomKey);
+
         // debugger;
         this.intervalId = setInterval(this.questionCountDown, 1000);
     },
