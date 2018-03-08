@@ -280,7 +280,7 @@ var vectorMap = {
 
 var game = {
     // initialize properties
-    timerDuration: 6,
+    timerDuration: 5,
     started: 0,
     currentCorrect: '',
     currentCorrectAbbrv: '',
@@ -297,14 +297,15 @@ var game = {
         // reset started bit
         this.started = 0;
         // set the modal message
-        if (status==="start") {
+        if (status === "start") {
             this.spentStates = [];
-            html = 'Test your 7th-grade geography knowledge!<br><br>Click to play.';            
+            html = 'Test your 7th-grade geography knowledge!<br><br>Click to play.';
         } else {
             // see make sure we don't look for states to ask about, if they're all used up
             if (this.spentStates.length >= Object.keys(state).length) {
                 // empty array to start over
                 this.spentStates = [];
+                this.resetMap();
                 html = "Correct States: " + this.correctAnswers + "<br><br>Incorrect States: " + this.incorrectAnswers + "<br><br>Click to play again.";
             } else {
                 html = "Correct States: " + this.correctAnswers + "<br><br>Incorrect States: " + this.incorrectAnswers + "<br><br>Click to continue playing.";
@@ -331,6 +332,16 @@ var game = {
 
     },
 
+    resetMap: function () {
+        keys = Object.keys(state);
+        state_colors = {};
+        for (i = 0; i < keys.length; i++) {
+            state_code = state[keys[i]].abbreviation;
+            state_colors[state_code] = '#f4f3f0';
+        }
+        $('#vmap').vectorMap('set', 'colors', state_colors);
+    },
+
     resetQuestion: function () {
         // reset question timer
         game.timer = game.timerDuration;
@@ -342,7 +353,7 @@ var game = {
         do {
             // generate a random number between 0 and the length og the keys array
             randomKey = Math.floor(Math.random() * keys.length);
-        // while that random key is not in the spent array
+            // while that random key is not in the spent array
         } while (game.spentStates.includes(randomKey) === true);
         // add the  key to the spent array
         game.spentStates.push(randomKey);
@@ -386,7 +397,7 @@ var game = {
             // set color of state
             state_colors[state_code] = 'red';
         }
-        if (region==="Timed Out") {
+        if (region === "Timed Out") {
             htmlAdd = "Time expired. ";
         }
         $('#vmap').vectorMap('set', 'colors', state_colors);
@@ -401,9 +412,11 @@ var game = {
                 game.resetQuestion();
             }
             game.disableClick = 0;
-        }, 3000);
+        }, 2500);
     },
 }
+
+
 
 $(document).ready(function () {
     $('#vmap').vectorMap(vectorMap);
